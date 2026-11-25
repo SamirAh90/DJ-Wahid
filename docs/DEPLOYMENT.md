@@ -17,6 +17,14 @@ Official references checked on 25 November 2026:
 The actual account, domain, certificate, database version and Apache modules must
 be checked during deployment. No live STRATO deployment is claimed by this project.
 
+## Netlify static deployment
+
+`netlify.toml` configures a static-only build so Git-connected Netlify deploys
+have an `index.html` and can serve the client-side routes. Its homepage uses
+published seed content from `database/content.json`. Netlify does not execute the
+PHP/MySQL backend: admin sign-in and database changes are unavailable there, and
+API requests return 503. Use the STRATO deployment below for the complete site.
+
 ## 1. Prepare the release locally
 
 ```sh

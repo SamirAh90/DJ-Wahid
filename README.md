@@ -7,6 +7,11 @@ content, animations and responsive layouts are retained.
 Production serves compiled frontend assets and PHP. It does not require Node.js,
 an application server, a cloud database subscription or a platform hosting account.
 
+Netlify builds a static frontend snapshot from `database/content.json` so the
+homepage and client-side routes remain available there. Netlify does not run this
+project's PHP/MySQL backend; sign-in, admin changes and live database updates
+require the STRATO deployment.
+
 ## Technology and architecture
 
 - React 19, TypeScript, Vite 8 and Tailwind CSS 4.
@@ -115,11 +120,15 @@ npm run build
 npm run check:deploy
 ```
 
-`npm run build` compiles the frontend, renders page/row templates locally, copies
-PHP and static assets into `dist/`, and verifies the deployment files. It fails
+`npm run build` compiles the frontend, renders page templates locally, copies PHP
+and static assets into `dist/`, and verifies the deployment files. It fails
 if required original images are missing or their recorded sizes do not match.
 Original image files belong in `public/images/`; `npm run assets:import -- <folder>`
 imports a complete set with the recorded filenames and sizes.
+
+Netlify reads `netlify.toml` and builds a static-only `dist/` without PHP source.
+The static homepage uses published seed content; API requests return an explicit
+503 because the PHP backend is unavailable on Netlify.
 
 To preview the actual PHP production output, set `origin` in the local private
 config to `http://127.0.0.1:8080`, keep `SITE_CONFIG_PATH` set, then run:

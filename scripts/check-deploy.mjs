@@ -3,7 +3,10 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 
-export async function checkDeployment() {
+export async function checkDeployment(target = process.env.SITE_BUILD_TARGET ?? "strato") {
+  if (target !== "strato" && target !== "netlify") {
+    throw new Error(`Unsupported deployment target: ${target}`);
+  }
   const failures = [];
   const assets = JSON.parse(await readFile("config/assets.json", "utf8"));
   for (const {filename, bytes, sha256} of assets) {
@@ -14,7 +17,22 @@ export async function checkDeployment() {
       }
     } catch { failures.push(`Missing original image: public/images/${filename}`); }
   }
-  for (const file of ["dist/.htaccess", "dist/index.php", "dist/api/index.php", "dist/templates/home.html", "dist/fonts/fonts.css", "dist/favicon.ico", "dist/robots.txt"]) {
+  const requiredFiles = ["dist/index.html", "dist/fonts/fonts.css", "dist/favicon.ico", "dist/robots.txt"];
+  if (target === "strato") {
+    requiredFiles.push("dist/.htaccess", "dist/index.php", "dist/api/index.php", "dist/templates/home.html");
+  } else {
+    requiredFiles.push("dist/_redirects", "dist/api-unavailable.json");
+    let redirects = "";
+    try {
+      redirects = await readFile("dist/_redirects", "utf8");
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+    }
+    if (!redirects.includes("/api/* /api-unavailable.json 503") || !redirects.includes("/* /index.html 200")) {
+      failures.push("Netlify redirects must preserve API errors and provide the SPA fallback.");
+    }
+  }
+  for (const file of requiredFiles) {
     try { await stat(file); } catch { failures.push(`Missing deployment file: ${file}`); }
   }
   const visit = async (directory) => {
@@ -23,6 +41,8 @@ export async function checkDeployment() {
       if (entry.isDirectory()) {
         if (["node_modules", ".git", "src", "private", "database"].includes(entry.name)) failures.push(`Private directory in deployment: ${file}`);
         await visit(file);
+      } else if (target === "netlify" && (entry.name.endsWith(".php") || entry.name === ".htaccess")) {
+        failures.push(`STRATO-only file in Netlify deployment: ${file}`);
       } else if (/\.map$|^\.env|^config\.php$|\.sql$/.test(entry.name)) failures.push(`Private/development file in deployment: ${file}`);
       else if (/\.(js|html|php|css)$/.test(entry.name)) {
         const content = await readFile(file, "utf8");
