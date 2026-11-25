@@ -1,0 +1,7 @@
+DirectoryIndex index.html
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(webp|jpe?g|mp4|ico)$">
+    Header set Cache-Control "public, max-age=86400"
+  </FilesMatch>
+</IfModule>
