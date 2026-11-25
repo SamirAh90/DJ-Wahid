@@ -1,0 +1,29 @@
+[
+  {
+    "slide": 1,
+    "source": "Images/DJ i vit kostym i neonljus-4.webp",
+    "destination": "public/images/hero-dj-1.webp",
+    "bytes": 1183598,
+    "sha256": "d293a735ff91fc034f02a71189a6072fad2ae665b7d69d3f98d1201e996facd4",
+    "original_export_bytes": 2041789,
+    "selection": "User authorized selection from supplied images; copied byte for byte, no recompression."
+  },
+  {
+    "slide": 2,
+    "source": "Images/Neonupplyst DJ-porträtt-1.webp",
+    "destination": "public/images/hero-dj-2.webp",
+    "bytes": 1220194,
+    "sha256": "471b60809dcb3d3e232d00b1b1dd9f6f75542aa6d2aeca0971ab0613d8cc0a32",
+    "original_export_bytes": 2109287,
+    "selection": "User authorized selection from supplied images; copied byte for byte, no recompression."
+  },
+  {
+    "slide": 3,
+    "source": "Images/Stämningsfull DJ i lila scenljus-3.webp",
+    "destination": "public/images/hero-dj-3.webp",
+    "bytes": 1396592,
+    "sha256": "187e558b0d013ed6d269c54a30491dcc697a070fa6a10758388110fc539b0dcd",
+    "original_export_bytes": 2289544,
+    "selection": "User authorized selection from supplied images; copied byte for byte, no recompression."
+  }
+]

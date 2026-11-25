@@ -1,0 +1,37 @@
+[
+  {
+    "filename": "hero-dj-1.webp",
+    "bytes": 1183598,
+    "sha256": "d293a735ff91fc034f02a71189a6072fad2ae665b7d69d3f98d1201e996facd4"
+  },
+  {
+    "filename": "hero-dj-2.webp",
+    "bytes": 1220194,
+    "sha256": "471b60809dcb3d3e232d00b1b1dd9f6f75542aa6d2aeca0971ab0613d8cc0a32"
+  },
+  {
+    "filename": "hero-dj-3.webp",
+    "bytes": 1396592,
+    "sha256": "187e558b0d013ed6d269c54a30491dcc697a070fa6a10758388110fc539b0dcd"
+  },
+  {
+    "filename": "dj-portrait-1.jpg",
+    "bytes": 92449,
+    "sha256": "327c5f7329336ae232f654f88ab090fc38f979f1ecadd11f70aa59d276c72951"
+  },
+  {
+    "filename": "dj-portrait-2.jpg",
+    "bytes": 87032,
+    "sha256": "cf9667702972d233aec287472ac66a6573eae1f230a00252ffa198399f63a7ac"
+  },
+  {
+    "filename": "dj-decks-1.jpg",
+    "bytes": 164903,
+    "sha256": "f19988c5b52496a4d65bb7f4b63ece185ea9445162e7c22c3a7b9833a0fef156"
+  },
+  {
+    "filename": "dj-decks-2.jpg",
+    "bytes": 139894,
+    "sha256": "ccb8f1cd42a9b3a35f7da41caf5e75ef5312eca9711020cd2b9750956d1b39ee"
+  }
+]

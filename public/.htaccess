@@ -1,0 +1,50 @@
+Options -Indexes -MultiViews
+DirectoryIndex index.php index.html
+
+<FilesMatch "(^\.|\.(env|ini|log|sql|bak|map|json)$|^config\.php$)">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <Files "fonts.css">
+    Header set Cache-Control "no-cache"
+  </Files>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css application/javascript application/json image/svg+xml
+</IfModule>
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 day"
+  ExpiresByType image/png "access plus 1 day"
+  ExpiresByType image/webp "access plus 1 day"
+  ExpiresByType image/x-icon "access plus 1 day"
+</IfModule>
+
+RewriteEngine On
+# Enable the SSL certificate before uploading this file. No forwarded-header trust.
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:[0-9]+)?$ [NC]
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# Preserve all seven original asset URLs while serving independent local files.
+RewriteRule ^__l5e/assets-v1/[^/]+/(hero-dj-[123])\.png$ images/$1.webp [END]
+RewriteRule ^__l5e/assets-v1/[^/]+/(dj-portrait-[12]\.jpg|dj-decks-[12]\.jpg)$ images/$1 [END]
+
+# Never expose build templates or turn unknown API/asset requests into HTML.
+RewriteRule ^templates(?:/|$) - [F,END]
+RewriteRule ^api(?:/|$) - [END]
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [END]
+RewriteRule ^(assets|images|fonts|__l5e)(/|$) - [R=404,END]
+RewriteRule ^ index.php [END]
