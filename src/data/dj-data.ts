@@ -14,8 +14,8 @@ export const DJ_PHONE_TEL = "+46736402445";
 
 export const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/dj.wahid2/",
-  tiktok: "https://www.tiktok.com/@afgentertainment.se",
-  facebook: "https://www.facebook.com/FOE2020",
+  tiktok: "https://www.tiktok.com/@dj.wahid2/",
+  whatsapp: `https://wa.me/${DJ_PHONE_TEL.replace(/\D/g, "")}`,
 } as const;
 
 export const HERO_SLIDES = [

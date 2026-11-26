@@ -166,7 +166,7 @@ corresponding rewrite stanza after confirming the provider's configuration.
 - First account confirmation, sign-in/out and normal non-admin denial work. Add,
   edit, hide, republish and delete temporary events/photos, then remove test data.
   Uploaded images remain private on disk and signed image links work for one hour.
-- Booking, ticket/service dialogs, newsletter confirmation, cart counter, hero
+- Booking, ticket/service dialogs, social/WhatsApp links, cart counter, hero
   slider, mobile menu and audio previews retain their original behavior.
 - Check browser console/network and PHP logs, then compare both pages at
   1920×1080, 1440×900, 768×1024 and 390×844 with the same browser settings.

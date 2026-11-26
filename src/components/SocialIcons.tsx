@@ -2,6 +2,25 @@ interface IconProps {
   className?: string;
 }
 
+export function WhatsAppIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" className={className}>
+      <path
+        d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.5L3 20.5l1.3-4.8a8.5 8.5 0 1 1 16.2-4Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.2 7.3c-.3 0-.6.2-.8.5-.4.5-.7 1-.6 1.7.2 1.4 1.3 3 2.6 4.2 1.4 1.2 3.1 2.1 4.5 2.1.7 0 1.3-.4 1.7-.9.2-.3.3-.7.2-.9l-1.7-.9c-.2-.1-.4-.1-.6.2l-.7.8c-.2.1-.4.1-.6 0a7.3 7.3 0 0 1-3.1-2.7c-.1-.2-.1-.4 0-.5l.6-.8c.1-.2.2-.4.1-.6L9 7.5c-.1-.2-.3-.2-.8-.2Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 /** TikTok glyph — the icon library has no official TikTok mark. */
 export function TikTokIcon({ className }: IconProps) {
   return (

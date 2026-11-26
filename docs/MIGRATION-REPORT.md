@@ -2,6 +2,12 @@
 
 Date: 25 November 2026.
 
+Follow-up requested on 26 November 2026: TikTok now links to `@dj.wahid2`,
+WhatsApp replaces Facebook using the existing telephone number, and the email
+subscription form and its accompanying text have been removed. The community
+heading remains. The migration comparisons below describe the website before
+these subsequent user-authorized content changes.
+
 ## Result and scope
 
 The source has been migrated to an independent React/Vite frontend with a PHP and

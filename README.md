@@ -31,10 +31,12 @@ SEO metadata. The local build derives its HTML row templates from the approved
 React components. After the initial data is ready, the browser mounts the React
 router over this initial HTML. No JavaScript server runs in production.
 
-The booking and newsletter forms retain their original browser-only confirmation
-behavior. They do not send email, save submissions or charge customers. The cart
+The booking form retains its original browser-only confirmation behavior. It does
+not send email, save submissions or charge customers. The subscription form was
+removed at the user's request. The cart
 retains its session-local counter, and podcast previews retain their Web Audio
-generator. There was no video player in the original website; the supplied
+generator. Instagram, TikTok (`@dj.wahid2`) and WhatsApp provide the social links;
+Facebook was removed at the user's request. There was no video player in the original website; the supplied
 `Vedios/` originals are retained outside the deployment output.
 
 The user supplied the missing media and authorized selection of the hero images.

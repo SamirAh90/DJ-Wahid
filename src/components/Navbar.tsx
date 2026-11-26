@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { ChevronDown, Facebook, Instagram, Menu, Phone, X } from "lucide-react";
+import { ChevronDown, Instagram, Menu, Phone, X } from "lucide-react";
 import { DJ_NAME, DJ_PHONE_TEL, DJ_SHORT, SOCIAL_LINKS } from "@/data/dj-data";
-import { TikTokIcon } from "@/components/SocialIcons";
+import { TikTokIcon, WhatsAppIcon } from "@/components/SocialIcons";
 
 interface NavbarProps {
   cartCount: number;
@@ -128,13 +128,13 @@ export function Navbar({ cartCount, onOpenBooking }: NavbarProps) {
               <TikTokIcon className="h-4 w-4" />
             </a>
             <a
-              href={SOCIAL_LINKS.facebook}
+              href={SOCIAL_LINKS.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Facebook"
+              aria-label="WhatsApp"
               className="transition-colors hover:text-primary"
             >
-              <Facebook className="h-4 w-4" />
+              <WhatsAppIcon className="h-4 w-4" />
             </a>
             <a
               href={`tel:${DJ_PHONE_TEL}`}
@@ -209,13 +209,13 @@ export function Navbar({ cartCount, onOpenBooking }: NavbarProps) {
                 <TikTokIcon className="h-4 w-4" />
               </a>
               <a
-                href={SOCIAL_LINKS.facebook}
+                href={SOCIAL_LINKS.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Facebook"
+                aria-label="WhatsApp"
                 className="transition-colors hover:text-primary"
               >
-                <Facebook className="h-4 w-4" />
+                <WhatsAppIcon className="h-4 w-4" />
               </a>
               <a
                 href={`tel:${DJ_PHONE_TEL}`}

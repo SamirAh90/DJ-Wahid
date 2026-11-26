@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
-import { ArrowRight, Facebook, Instagram, Phone, X } from "lucide-react";
+import { ArrowRight, Instagram, Phone, X } from "lucide-react";
 import { BLOG_POSTS, DJ_NAME, DJ_PHONE_DISPLAY, DJ_PHONE_TEL, DJ_SHORT, SOCIAL_LINKS } from "@/data/dj-data";
-import { TikTokIcon } from "@/components/SocialIcons";
+import { TikTokIcon, WhatsAppIcon } from "@/components/SocialIcons";
 
 interface BookingModalProps {
   open: boolean;
@@ -101,63 +101,14 @@ export function BookingModal({ open, subject, onClose }: BookingModalProps) {
 }
 
 export function CommunityAndFooter() {
-  const [email, setEmail] = useState("");
-  const [agreed, setAgreed] = useState(false);
-  const [status, setStatus] = useState<string | null>(null);
-
-  const handleSubscribe = (e: FormEvent) => {
-    e.preventDefault();
-    if (!email.trim() || !agreed) {
-      setStatus("Please enter your email and agree to the terms & conditions.");
-      return;
-    }
-    setStatus("You're in the tribe! Watch your inbox for upcoming dates.");
-    setEmail("");
-    setAgreed(false);
-  };
-
   return (
     <>
-      {/* 9. Newsletter / Community Banner */}
+      {/* 9. Community Banner */}
       <section className="relative overflow-hidden border-y border-primary/30 bg-gradient-to-r from-surface-deep via-primary/20 to-surface-deep py-20">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="font-display text-3xl font-black tracking-tight uppercase text-foreground sm:text-5xl">
             JOIN MY TRIBE <span className="text-primary">{DJ_SHORT}</span>
           </h2>
-          <p className="mt-3 text-base text-muted-foreground">
-            Enter your email and be the first to know about events!
-          </p>
-
-          <form onSubmit={handleSubscribe} className="mt-8 space-y-4">
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email address"
-                className="flex-1 rounded-sm border border-border bg-surface-deep/90 px-4 py-3.5 text-sm text-foreground outline-none focus:border-primary"
-              />
-              <button
-                type="submit"
-                className="btn-magenta cursor-pointer rounded-sm px-8 py-3.5 font-display text-xs font-bold tracking-[0.2em] uppercase"
-              >
-                Subscribe
-              </button>
-            </div>
-
-            <label className="inline-flex cursor-pointer items-center gap-2.5 text-xs text-muted-foreground">
-              <input
-                type="checkbox"
-                checked={agreed}
-                onChange={(e) => setAgreed(e.target.checked)}
-                className="h-4 w-4 accent-primary"
-              />
-              <span>I have read and agree to the terms &amp; conditions</span>
-            </label>
-
-            {status && <p className="text-sm font-medium text-cyan-glow">{status}</p>}
-          </form>
         </div>
       </section>
 
@@ -252,13 +203,13 @@ export function CommunityAndFooter() {
               <TikTokIcon className="h-4 w-4" />
             </a>
             <a
-              href={SOCIAL_LINKS.facebook}
+              href={SOCIAL_LINKS.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Facebook"
+              aria-label="WhatsApp"
               className="grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/80 transition-colors hover:border-primary hover:text-primary"
             >
-              <Facebook className="h-4 w-4" />
+              <WhatsAppIcon className="h-4 w-4" />
             </a>
           </div>
 
