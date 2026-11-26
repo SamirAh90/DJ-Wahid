@@ -1,3 +1,5 @@
+import { t } from "@/lib/language";
+import { STATIC_PREVIEW } from "@/lib/website";
 let csrfToken: string | undefined;
 let sessionRequest: Promise<Session> | undefined;
 type Session = { user: { id: string; email: string } | null; csrf_token: string };
@@ -5,7 +7,7 @@ type Session = { user: { id: string; email: string } | null; csrf_token: string 
 export async function api<T>(action: string, data?: unknown): Promise<T> {
   if (data !== undefined && !csrfToken) await getSession();
   const isFile = data instanceof FormData;
-  const response = await fetch(`/api/index.php?action=${encodeURIComponent(action)}`, {
+  const response = await fetch(STATIC_PREVIEW && action === 'content' ? '/site-content.json' : `/api/index.php?action=${encodeURIComponent(action)}`, {
     method: data === undefined ? "GET" : "POST",
     credentials: "same-origin",
     headers: data === undefined ? {} : {
@@ -15,7 +17,7 @@ export async function api<T>(action: string, data?: unknown): Promise<T> {
     ...(data === undefined ? {} : { body: isFile ? data : JSON.stringify(data) }),
   });
   const result = await response.json();
-  if (!response.ok) throw new Error(result.error ?? "The request could not be completed.");
+  if (!response.ok) throw new Error(t(result.error ?? "The request could not be completed."));
   return result as T;
 }
 

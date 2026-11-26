@@ -6,7 +6,7 @@ $root = realpath($_SERVER['DOCUMENT_ROOT']);
 $path = rawurldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/');
 if (str_contains($path, "\0") || str_contains($path, '\\') || preg_match('~(^|/)\.~', $path)
     || preg_match('~^/(templates|private|src|database|node_modules|server|scripts|config)(/|$)~', $path)
-    || preg_match('~^/api/(bootstrap|content|auth|public-gallery)\.php$~', $path)
+    || preg_match('~^/api/(bootstrap|content|auth|public-gallery|site-settings|media-library|av-library)\.php$~', $path)
     || preg_match('~\.(env|ini|log|sql|bak|map|json)$~', $path)) {
     http_response_code(403); exit;
 }

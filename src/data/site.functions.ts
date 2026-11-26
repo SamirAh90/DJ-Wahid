@@ -13,6 +13,7 @@ export type SiteEvent = {
 };
 
 export type SitePhoto = {
+  used_on_site?: boolean;
   id: string;
   image_url: string;
   caption: string;
@@ -22,7 +23,8 @@ export type SitePhoto = {
   published: boolean;
 };
 
-export type SiteContent = { events: SiteEvent[]; photos: SitePhoto[] };
+export type LibraryMedia = {id:string;title:string;url:string;preview_url:string;type:"video"|"audio";used_on_site:boolean};
+export type SiteContent = { events: SiteEvent[]; photos: SitePhoto[]; website?: import('@/lib/website').WebsiteSettings; library_initialized?: boolean; media_library?: LibraryMedia[] };
 
 export type EventInput = {
   id?: string;

@@ -2,6 +2,9 @@
 declare(strict_types=1);
 require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/public-gallery.php';
+require_once __DIR__ . '/site-settings.php';
+require_once __DIR__ . '/media-library.php';
+require_once __DIR__ . '/av-library.php';
 
 function photoUrl(string $value): string
 {
@@ -27,13 +30,22 @@ function siteContent(bool $all = false): array
         foreach (['likes', 'comments', 'sort_order'] as $key) $photo[$key] = (int)$photo[$key];
         $photo['image_url'] = photoUrl($photo['image_url']);
     }
-    if (!$all) {
+    if (!$all && !libraryInitialized()) {
         $folderPhotos = readPublicGallery(getenv('SITE_PUBLIC_IMAGES_PATH') ?: dirname(__DIR__) . '/images');
         $folderUrls = array_column($folderPhotos, 'image_url');
         $photos = [...$folderPhotos, ...array_values(array_filter($photos,
             static fn(array $photo): bool => !in_array($photo['image_url'], $folderUrls, true)))];
     }
-    return ['events' => $events, 'photos' => $photos];
+    $website = websiteSettings();
+    if (!$all) foreach (($website['config']['media'] ?? []) as $slot => $url) {
+        if (str_starts_with($url, 'storage://')) $website['config']['media'][$slot] = '/api/index.php?action=website-media&slot=' . hash('sha256', $slot) . '&v=' . hash('sha256', $url);
+        if (str_starts_with($url, 'library:')) $website['config']['media'][$slot] = libraryImageUrl(substr($url,8));
+        if (str_starts_with($url, 'av:')) { $record = audiovisualRecord(substr($url,3)); $website['config']['media'][$slot] = $record ? audiovisualUrl($record) : ''; }
+    }
+    if ($all) foreach ($photos as &$photo) $photo['used_on_site'] = in_array('library:' . $photo['id'], $website['config']['media'] ?? [], true);
+    $av=[];
+    if($all)foreach(audiovisualLibrary() as $record){$record['preview_url']=photoUrl($record['url']);$record['used_on_site']=in_array('av:'.$record['id'],$website['config']['media']??[],true);$av[]=$record;}
+    return ['events' => $events, 'photos' => $photos, 'website' => $website, 'library_initialized' => libraryInitialized(), 'media_library'=>$av];
 }
 
 function normalizeImage(string $url, ?string $existing = null): string

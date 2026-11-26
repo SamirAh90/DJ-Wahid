@@ -1,5 +1,7 @@
+import { asset, sectionEnabled, STATIC_PREVIEW } from "@/lib/website";
+import { t, useLanguage } from "@/lib/language";
 import { useState, type FormEvent } from "react";
-import { ArrowRight, Instagram, Phone, X } from "lucide-react";
+import { ArrowRight, Facebook, Instagram, Phone, X } from "lucide-react";
 import { BLOG_POSTS, DJ_NAME, DJ_PHONE_DISPLAY, DJ_PHONE_TEL, DJ_SHORT, SOCIAL_LINKS } from "@/data/dj-data";
 import { SwedenFlag, TikTokIcon, WhatsAppIcon } from "@/components/SocialIcons";
 
@@ -10,6 +12,7 @@ interface BookingModalProps {
 }
 
 export function BookingModal({ open, subject, onClose }: BookingModalProps) {
+  useLanguage();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -31,21 +34,19 @@ export function BookingModal({ open, subject, onClose }: BookingModalProps) {
             setSubmitted(false);
             onClose();
           }}
-          aria-label="Close modal"
+          aria-label={t("Close modal")}
           className="absolute right-4 top-4 cursor-pointer text-muted-foreground hover:text-foreground"
         >
           <X className="h-5 w-5" />
         </button>
 
-        <p className="section-eyebrow">{DJ_NAME}</p>
-        <h3 className="mt-2 font-display text-2xl font-black uppercase text-foreground">{subject}</h3>
+        <p className="section-eyebrow">{t(DJ_NAME)}</p>
+        <h3 className="mt-2 font-display text-2xl font-black uppercase text-foreground">{t(subject)}</h3>
 
-        {submitted ? (
+        {t(submitted ? (
           <div className="mt-5 space-y-4">
             <p className="text-sm text-muted-foreground">
-              Thanks, {name}. Your request for <strong className="text-foreground">{subject}</strong> has been noted.
-              Our booking team will follow up at {email}.
-            </p>
+              {t("Thanks, ")}{t(name)}{t(". Your request for ")}<strong className="text-foreground">{t(subject)}</strong> {t("has been noted. Our booking team will follow up at ")}{t(email)}{t(". ")}</p>
             <button
               type="button"
               onClick={() => {
@@ -56,34 +57,31 @@ export function BookingModal({ open, subject, onClose }: BookingModalProps) {
               }}
               className="btn-magenta w-full cursor-pointer rounded-sm py-3 font-display text-xs font-bold tracking-[0.2em] uppercase"
             >
-              Done
-            </button>
+              {t("Done ")}</button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="mt-5 space-y-4">
             <div>
               <label className="block font-display text-xs font-bold tracking-wider uppercase text-muted-foreground">
-                Your Name
-              </label>
+                {t("Your Name ")}</label>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Alex Rivera"
+                placeholder={t("Alex Rivera")}
                 className="mt-1.5 w-full rounded-sm border border-border bg-background px-3.5 py-2.5 text-sm text-foreground outline-none focus:border-primary"
               />
             </div>
             <div>
               <label className="block font-display text-xs font-bold tracking-wider uppercase text-muted-foreground">
-                Email Address
-              </label>
+                {t("Email Address ")}</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={t("you@example.com")}
                 className="mt-1.5 w-full rounded-sm border border-border bg-background px-3.5 py-2.5 text-sm text-foreground outline-none focus:border-primary"
               />
             </div>
@@ -91,123 +89,128 @@ export function BookingModal({ open, subject, onClose }: BookingModalProps) {
               type="submit"
               className="btn-magenta w-full cursor-pointer rounded-sm py-3 font-display text-xs font-bold tracking-[0.2em] uppercase"
             >
-              Confirm Request
-            </button>
+              {t("Confirm Request ")}</button>
           </form>
-        )}
+        ))}
       </div>
     </div>
   );
 }
 
 export function CommunityAndFooter() {
+  const language = useLanguage();
   return (
     <>
       {/* 9. Community Banner */}
-      <section className="relative overflow-hidden border-y border-primary/30 bg-gradient-to-r from-surface-deep via-primary/20 to-surface-deep py-20">
+      <section id="community" hidden={!sectionEnabled("community")} className="relative overflow-hidden border-y border-primary/30 bg-gradient-to-r from-surface-deep via-primary/20 to-surface-deep py-20">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="font-display text-3xl font-black tracking-tight uppercase text-foreground sm:text-5xl">
-            JOIN MY TRIBE <span className="text-primary">{DJ_SHORT}</span>
+            {t("JOIN MY TRIBE ")}<span className="text-primary">{t(DJ_SHORT)}</span>
           </h2>
         </div>
       </section>
 
       {/* 10. Blog / Music News Section */}
-      <section id="news" className="bg-background py-24">
+      <section hidden={!sectionEnabled("news")} id="news" className="bg-background py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <p className="section-eyebrow">Blog</p>
+            <p className="section-eyebrow">{t("Blog")}</p>
             <h2 className="mt-2 font-display text-4xl font-black tracking-tight uppercase text-foreground sm:text-5xl">
-              Music News
-            </h2>
+              {t("Music News ")}</h2>
           </div>
 
           <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {BLOG_POSTS.map((post) => (
+            {t(BLOG_POSTS.map((post, index) => (
               <article
                 key={post.id}
                 className="group overflow-hidden rounded-sm border border-border bg-card/80 transition-colors hover:border-primary/60"
               >
-                <div className="aspect-[16/10] overflow-hidden">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                <div className="aspect-[9/16] overflow-hidden">
+                  <video
+                    src={asset(`/videos/news-${index + 1}.mp4`)}
+                    poster={asset(`/videos/news-${index + 1}.jpg`)}
+                    aria-label={t(post.title)}
+                    controls playsInline preload="metadata"
+                    className="h-full w-full bg-black object-contain"
+                    onPlay={(event) => {
+                      window.dispatchEvent(new Event("dj:podcast-play"));
+                      document.querySelectorAll("video").forEach((video) => {
+                        if (video !== event.currentTarget) video.pause();
+                      });
+                    }}
+                    onEnded={() => window.dispatchEvent(new Event("dj:podcast-stop"))}
                   />
                 </div>
                 <div className="p-6">
-                  <p className="font-display text-xs font-bold tracking-[0.2em] uppercase text-primary">{post.date}</p>
-                  <h3 className="mt-2 font-display text-xl font-extrabold uppercase text-foreground">{post.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{post.excerpt}</p>
+                  <p className="font-display text-xs font-bold tracking-[0.2em] uppercase text-primary">{t(post.date)}</p>
+                  <h3 className="mt-2 font-display text-xl font-extrabold uppercase text-foreground">{t(post.title)}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{t(post.excerpt)}</p>
                   <a
-                    href="#news"
+                    href={asset("#news")}
                     className="mt-5 inline-flex items-center gap-1.5 font-display text-xs font-bold tracking-[0.18em] uppercase text-foreground transition-colors hover:text-primary"
                   >
-                    Read More <ArrowRight className="h-3.5 w-3.5" />
+                    {t("Read More ")}<ArrowRight className="h-3.5 w-3.5" />
                   </a>
                 </div>
               </article>
-            ))}
+            )))}
           </div>
 
           <div className="mt-12 text-center">
             <a
-              href="#news"
+              href={asset("#news")}
               className="btn-ghost-club inline-block rounded-sm px-8 py-3.5 font-display text-xs font-bold tracking-[0.2em] uppercase"
             >
-              More Posts
-            </a>
+              {t("More Posts ")}</a>
           </div>
         </div>
       </section>
 
       {/* 11. Footer */}
-      <footer id="contact" className="border-t border-border bg-surface-deep py-16">
+      <footer hidden={!sectionEnabled("contact")} id="contact" className="border-t border-border bg-surface-deep py-16">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-8 px-4 text-center sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-center gap-8 text-sm font-medium text-foreground/90">
             <a
-              href={`tel:${DJ_PHONE_TEL}`}
+              href={asset(`tel:${DJ_PHONE_TEL}`)}
               className="flex items-center gap-2 transition-colors hover:text-primary"
             >
               <Phone className="h-4 w-4 text-primary" />
               <SwedenFlag className="h-3.5 w-5 shrink-0 rounded-[1px]" />
-              {DJ_PHONE_DISPLAY}
-            </a>
-            <a
-              href={SOCIAL_LINKS.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 transition-colors hover:text-primary"
-            >
-              <Instagram className="h-4 w-4 text-primary" />
-              @dj.wahid2
+              {t(DJ_PHONE_DISPLAY)}
             </a>
           </div>
 
-          <div className="flex items-center gap-4">
+          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+            {t("We welcome artists, event organisers, sponsors, venues and other creative collaborations. ")}</p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
             <a
-              href={SOCIAL_LINKS.instagram}
+              href={asset("https://www.instagram.com/arya_entertainment.se/")}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Instagram"
+              aria-label={t("Instagram")}
               className="grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/80 transition-colors hover:border-primary hover:text-primary"
             >
               <Instagram className="h-4 w-4" />
             </a>
+            <a href={asset("https://www.facebook.com/p/Arya-Entertainment-AB-100083463424063/")}
+              target="_blank" rel="noopener noreferrer" aria-label={t("Facebook")}
+              className="grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/80 transition-colors hover:border-primary hover:text-primary">
+              <Facebook className="h-4 w-4" />
+            </a>
             <a
-              href={SOCIAL_LINKS.tiktok}
+              href={asset(SOCIAL_LINKS.tiktok)}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="TikTok"
+              aria-label={t("TikTok")}
               className="grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/80 transition-colors hover:border-primary hover:text-primary"
             >
               <TikTokIcon className="h-4 w-4" />
             </a>
             <a
-              href={SOCIAL_LINKS.whatsapp}
+              href={asset(SOCIAL_LINKS.whatsapp)}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="WhatsApp"
+              aria-label={t("WhatsApp")}
               className="grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/80 transition-colors hover:border-primary hover:text-primary"
             >
               <WhatsAppIcon className="h-4 w-4" />
@@ -216,14 +219,19 @@ export function CommunityAndFooter() {
 
           <div className="flex items-center gap-3">
             <span className="grid h-9 w-9 place-items-center rounded-sm border border-primary/80 bg-primary/15 font-display text-xs font-black tracking-widest text-foreground">
-              {DJ_SHORT}
+              {t(DJ_SHORT)}
             </span>
             <span className="font-display text-lg font-extrabold tracking-wider uppercase text-foreground">
-              {DJ_NAME}
+              {t(DJ_NAME)}
             </span>
           </div>
 
-          <p className="text-xs text-muted-foreground">&copy; 2026. All rights reserved.</p>
+          {!STATIC_PREVIEW && <a href={asset("/admin")} className="text-sm text-muted-foreground transition-colors hover:text-primary">{t("Admin")}</a>}
+          <a href={asset(language === "sv" ? "/integritet/sv.html" : "/integritet/index.html?lang=en")} className="text-sm text-muted-foreground transition-colors hover:text-primary">{t("Privacy & local storage")}</a>
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            {t("© 2026 ")}<strong className="font-bold text-foreground">{t("DJ Wahid")}</strong> {t("AB powered by")}{t(" ")}
+            <a href={asset("https://daladana.se/")} target="_blank" rel="noopener noreferrer" className="font-bold text-foreground transition-colors hover:text-primary">{t("DALADANA")}</a>
+          </p>
         </div>
       </footer>
     </>

@@ -26,20 +26,20 @@ export const SOCIAL_LINKS = {
 export const HERO_SLIDES = [
   {
     id: "slide-1",
-    subtitle: "Jan 03, 2027 • Florida",
-    heading: "SUPERMIX ELECTRO HOUSE",
+    subtitle: "Weddings · Parties · Events in Malmö & Sweden",
+    heading: "AFGHAN, PERSIAN & INTERNATIONAL DJ",
     image: heroDj1.url,
   },
   {
     id: "slide-2",
-    subtitle: "Jan 15, 2027 • Miami",
-    heading: "TRACKS DRUM & BASS",
+    subtitle: "Your people. Your celebration.",
+    heading: "THE MUSIC, THE ENERGY, THE ATMOSPHERE",
     image: heroDj2.url,
   },
   {
     id: "slide-3",
-    subtitle: "Jan 24, 2027 • Orlando this week",
-    heading: "DEEP HOUSE",
+    subtitle: "Timeless classics · International hits · Oriental rhythms",
+    heading: "UNFORGETTABLE MOMENTS START HERE",
     image: heroDj3.url,
   },
 ] as const;

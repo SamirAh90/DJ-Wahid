@@ -1,3 +1,5 @@
+import { t, useLanguage } from "@/lib/language";
+import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -9,21 +11,20 @@ import {
 } from "@tanstack/react-router";
 
 export function NotFoundComponent() {
+  useLanguage();
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <h1 className="text-7xl font-bold text-foreground">{t("404")}</h1>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">{t("Page not found")}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
+          {t("The page you're looking for doesn't exist or has been moved. ")}</p>
         <div className="mt-6">
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Go home
-          </Link>
+            {t("Go home ")}</Link>
         </div>
       </div>
     </div>
@@ -31,6 +32,7 @@ export function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
+  useLanguage();
   console.error(error);
   const router = useRouter();
 
@@ -38,11 +40,9 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
-        </h1>
+          {t("This page didn't load ")}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
-        </p>
+          {t("Something went wrong on our end. You can try refreshing or head back home. ")}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {
@@ -51,14 +51,12 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
             }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Try again
-          </button>
+            {t("Try again ")}</button>
           <a
             href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            Go home
-          </a>
+            {t("Go home ")}</a>
         </div>
       </div>
     </div>
@@ -70,18 +68,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "DJ Wahid — Electronic Music, Live Events & Podcasts" },
+      { title: "DJ Wahid | Afghan & Persian Wedding DJ in Malmö" },
       {
         name: "description",
         content:
-          "Official website of DJ Wahid (DJW). Upcoming club dates, Supermix podcasts, vinyl releases, and booking.",
+          "Afghan, Persian and Kurdish wedding DJ based in Malmö. International music for weddings, birthdays, graduation parties and corporate events. Book DJ Wahid.",
       },
       { name: "author", content: "DJ Wahid" },
-      { property: "og:title", content: "DJ Wahid — Electronic Music, Live Events & Podcasts" },
+      { property: "og:title", content: "DJ Wahid | Afghan & Persian Wedding DJ in Malmö" },
       {
         property: "og:description",
         content:
-          "Official website of DJ Wahid (DJW). Upcoming club dates, Supermix podcasts, vinyl releases, and booking.",
+          "Afghan, Persian and Kurdish wedding DJ based in Malmö. International music for weddings, birthdays, graduation parties and corporate events. Book DJ Wahid.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -91,7 +89,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "/fonts/fonts.css",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.ico?v=dc245c88a36d", type: "image/x-icon" },
     ],
   }),
   component: RootComponent,
@@ -100,6 +98,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootComponent() {
+  useLanguage();
   const { queryClient } = Route.useRouteContext();
 
   return (
@@ -107,6 +106,7 @@ function RootComponent() {
       <HeadContent />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <Toaster style={{ maxWidth: "calc(100vw - 32px)" }} />
     </QueryClientProvider>
   );
 }

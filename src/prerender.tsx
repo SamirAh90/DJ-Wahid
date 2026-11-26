@@ -7,11 +7,14 @@ import type { SiteContent, SiteEvent, SitePhoto } from "./data/site.functions";
 import { RouterContextProvider, createMemoryHistory } from "@tanstack/react-router";
 import { getRouter } from "./router";
 import { NotFoundComponent } from "./routes/__root";
+import { setRenderLanguage, type Language } from "./lib/language";
 
-export function renderHome(content: SiteContent): string {
+export function renderHome(content: SiteContent, language: Language = "en"): string {
   const client = new QueryClient();
   client.setQueryData(["site-content"], content);
-  return renderToStaticMarkup(<QueryClientProvider client={client}><Index /></QueryClientProvider>);
+  setRenderLanguage(language);
+  try { return renderToStaticMarkup(<QueryClientProvider client={client}><Index /></QueryClientProvider>); }
+  finally { setRenderLanguage("en"); }
 }
 
 export function renderAdmin(): string {
@@ -26,25 +29,28 @@ export function renderNotFound(): string {
 
 // Derive the PHP row templates from the approved React component itself.
 // No duplicate hand-maintained presentation markup lives in the PHP backend.
-export function rowTemplates() {
+export function rowTemplates(language: Language = "en") {
   const event: SiteEvent = {
     id: "template-event", day_label: "__DAY_LABEL__", month_label: "__MONTH_LABEL__",
-    title: "__TITLE__", description: "__DESCRIPTION__", location: "", price: "",
+    title: "__TITLE__", description: "__DESCRIPTION__", location: "__LOCATION__", price: "__PRICE__",
     event_date: null, published: true,
   };
   const photo: SitePhoto = {
     id: "template-photo", image_url: "__IMAGE_URL__", caption: "__CAPTION__",
     likes: 111111111, comments: 222222222, sort_order: 0, published: true,
   };
-  const markup = renderToStaticMarkup(<ClubSections onGetTickets={() => {}} onBuyVinyl={() => {}}
-    cartCount={0} onBookService={() => {}} events={[event]} photos={[photo]} />);
-  const eventMarker = '<div class="mt-12 space-y-4">';
-  const eventStart = markup.indexOf(eventMarker) + eventMarker.length;
-  const eventEnd = markup.indexOf('</div><div class="mt-10 text-center">', eventStart);
+  setRenderLanguage(language);
+  let markup: string;
+  try { markup = renderToStaticMarkup(<ClubSections onGetTickets={() => {}} onBuyVinyl={() => {}}
+    cartCount={0} onBookService={() => {}} events={[event]} photos={[photo]} />); }
+  finally { setRenderLanguage("en"); }
+  const eventMarker = '<article data-event-card=""';
+  const eventStart = markup.indexOf(eventMarker);
+  const eventEnd = markup.indexOf('</article>', eventStart) + '</article>'.length;
   const photoMarker = '<div class="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">';
   const photoStart = markup.indexOf(photoMarker) + photoMarker.length;
   const photoEnd = markup.indexOf('</div></div></section>', photoStart);
-  if (eventStart < eventMarker.length || eventEnd < 0 || photoStart < photoMarker.length || photoEnd < 0) {
+  if (eventStart < 0 || eventEnd < '</article>'.length || photoStart < photoMarker.length || photoEnd < 0) {
     throw new Error("Could not derive content templates from the existing layout.");
   }
   return {

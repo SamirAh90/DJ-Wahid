@@ -1,5 +1,47 @@
 # DJ Wahid website
 
+Netlify is a customer-facing static preview. It uses the committed public snapshot
+in `database/netlify-content.json` and exported files in `public/site-media`.
+The admin footer link is hidden in that build; direct `/admin` navigation explains
+that administration belongs to the STRATO deployment. The PHP/MySQL architecture
+and admin remain available in the normal STRATO build. Accounts, private uploads
+that are not published, and server configuration are never exported.
+To refresh the snapshot from a running local preview, run
+`node scripts/export-preview.mjs`, then commit the public snapshot and assets.
+Verify a Netlify build with `SITE_BUILD_TARGET=netlify npm run build` and
+`node scripts/test-netlify.mjs`. On PowerShell set the environment variable first.
+
+The navigation provides EN/SV language buttons. Swedish presentation strings live
+in `src/data/swedish.ts`; the shared language store is in `src/lib/language.tsx`.
+The optional `dj-language` local-storage setting remembers the visitor's selection.
+Switching languages preserves component state and media playback. English remains
+the initial default. The admin editor can disable either language and change the
+default for new visitors. The privacy pages are `/integritet/index.html` (English) and
+`/integritet/sv.html` (Swedish), with language controls on both pages.
+Run `node scripts/test-language.mjs` against the local preview to verify language
+switching, saved preferences, dialogs, admin login and both privacy pages.
+
+The admin portal is a dashboard with a left-hand menu for each website section,
+image and video/audio libraries, social links, languages, SEO and privacy. Section
+pages show their own English/Swedish text and media together. The overview shows
+current content previews. Drafts survive switching sections and use shared Save,
+Preview and Discard controls. Events and gallery management are accessible from
+their matching section pages. The editor manages section visibility, rental prices,
+image/video/audio uploads and visual library selection, links and policy content.
+Draft preview opens a separate tab without publishing. Save changes persists
+settings in the existing `site_settings` table as a versioned JSON document split
+into bounded rows; no schema migration is needed. Conflicting saves return 409.
+Uploaded videos and audio have database library records stored in bounded rows of
+the existing settings table. They can be previewed, renamed, replaced and deleted.
+Existing optimized news videos and background music can be imported into this
+library. Used media cannot be deleted until its section uses a replacement.
+Current section texts and defaults can be materialized in the database through
+the authenticated initialize-website action; existing edits are preserved.
+Uploaded site media stays private until referenced by saved website settings.
+Published media URLs support range requests for audio/video playback. Private
+gallery links retain signature checks. Save/error notifications appear in the UI.
+The hero and navigation booking buttons open the same contact panel as Biography.
+
 DJ Wahid's existing music, events, gallery and booking website, prepared for
 STRATO Webbhotell Basic. The approved React components, CSS, colours, typography,
 content, animations and responsive layouts are retained.
@@ -22,11 +64,15 @@ require the STRATO deployment.
 - MySQL 8 or MariaDB 10.6+ with InnoDB and utf8mb4.
 - Local images and locally served DM Sans/Montserrat font files with OFL licenses.
 
-The public gallery reads the files currently in `public/images`, displaying
-duplicate file contents only once. Names with spaces and Swedish letters are
-supported. No gallery database rows are needed for these images. The database
-starts without demo events, photos or accounts; later admin-created events and
-private uploads are stored normally. The admin portal
+The Photos tab provides a database-backed image library with thumbnails, multi-file
+uploads, replacement, captions, gallery visibility and deletion. Existing public
+images can be imported once with **Import existing website images**. Import copies
+their files into private storage and creates database records without changing the
+source assets. Images used by the hero and biography are connected to library IDs.
+Once imported, the public gallery reads database records; hidden or deleted images
+are not automatically re-added from the public folder. Website image fields offer
+a visual library picker. In-use images must be replaced before deletion.
+The database starts without demo events, photos or accounts. The admin portal
 supports account registration, sign-in/out, event management, image uploads,
 publishing/hiding photos and deletion. Private uploads stay outside the domain's
 document root and are served through signed links valid for one hour.
@@ -48,10 +94,10 @@ present, is copied into the deployment output without adding a video player.
 The service buttons open a contact panel with phone, Instagram, WhatsApp and
 TikTok links. The footer identifies the phone number with a Swedish flag.
 `public/mp3/Bijan Mortazavi.mp3` supplies looping background music with a compact
-pink/cyan animated player. Play/pause and mute preferences are remembered locally.
-Browsers that block audible autoplay start playback after a visitor's first
-interaction or a press of Play. Starting a podcast preview pauses background music,
-and starting background music stops a podcast preview. Reduced-motion preferences
+pink/cyan equalizer centred near the bottom of the hero, without a player box or
+track label. Its only control is mute/unmute. Each page visit starts with sound enabled;
+the mute choice applies to the current visit. Browsers that block audible autoplay start playback after a visitor's
+first interaction. Background music continues while other media plays, until the visitor mutes it. Reduced-motion preferences
 disable the visualizer animation.
 
 The user manages images directly in `public/images`. The stable names
@@ -171,7 +217,7 @@ then removes its records. Never run it against the production database.
 
 Browser checks can be repeated with `npx playwright install chromium` followed by
 `npm run test:browser`. `npm run test:music` verifies both autoplay policies,
-play/pause/mute preferences, podcast switching and the mobile contact panel.
+continuous playback, mute preferences, podcast switching and the mobile contact panel.
 To use an installed Edge browser on Windows, set
 `$env:BROWSER_CHANNEL='msedge'` in PowerShell first. Capture both pages with
 `npm run capture -- http://127.0.0.1:8080 artifacts/after`, then compare against a

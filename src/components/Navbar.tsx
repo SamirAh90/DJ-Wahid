@@ -1,3 +1,6 @@
+import { asset, sectionEnabled } from "@/lib/website";
+import { t, useLanguage } from "@/lib/language";
+import { LanguageSwitcher } from "@/lib/language";
 import { useEffect, useState } from "react";
 import { ChevronDown, Instagram, Menu, Phone, X } from "lucide-react";
 import { DJ_NAME, DJ_PHONE_TEL, DJ_SHORT, SOCIAL_LINKS } from "@/data/dj-data";
@@ -12,7 +15,7 @@ const NAV_LINKS = [
   { label: "Home", href: "#home" },
   { label: "Biography", href: "#biography" },
   { label: "Events", href: "#events" },
-  { label: "Shop", href: "#shop" },
+  { label: "Equipment Rental", href: "#shop" },
 ];
 
 const PAGES_LINKS = [
@@ -23,6 +26,7 @@ const PAGES_LINKS = [
 ];
 
 export function Navbar({ cartCount, onOpenBooking }: NavbarProps) {
+  useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [pagesOpen, setPagesOpen] = useState(false);
@@ -43,25 +47,25 @@ export function Navbar({ cartCount, onOpenBooking }: NavbarProps) {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <a href="#home" className="flex shrink-0 items-center gap-3">
+        <a href={asset("#home")} className="flex shrink-0 items-center gap-3">
           <span className="grid h-10 w-10 place-items-center rounded-sm border border-primary/80 bg-primary/15 font-display text-xs font-black tracking-widest text-foreground">
-            {DJ_SHORT}
+            {t(DJ_SHORT)}
           </span>
           <span className="font-display text-lg font-extrabold tracking-wider uppercase text-foreground">
-            {DJ_NAME}
+            {t(DJ_NAME)}
           </span>
         </a>
 
-        <nav className="hidden items-center gap-7 lg:flex" aria-label="Main navigation">
-          {NAV_LINKS.map((item) => (
+        <nav className="hidden items-center gap-3 xl:flex" aria-label={t("Main navigation")}>
+          {t(NAV_LINKS.map((item) => (
             <a
               key={item.label}
-              href={item.href}
+              href={asset(item.href)}
               className="font-display text-xs font-bold tracking-[0.18em] uppercase text-foreground/85 transition-colors hover:text-primary"
             >
-              {item.label}
+              {t(item.label)}
             </a>
-          ))}
+          )))}
 
           <div
             className="relative"
@@ -73,72 +77,71 @@ export function Navbar({ cartCount, onOpenBooking }: NavbarProps) {
               onClick={() => setPagesOpen((prev) => !prev)}
               className="flex items-center gap-1 font-display text-xs font-bold tracking-[0.18em] uppercase text-foreground/85 transition-colors hover:text-primary"
             >
-              Pages <ChevronDown className="h-3.5 w-3.5" />
+              {t("Pages ")}<ChevronDown className="h-3.5 w-3.5" />
             </button>
-            {pagesOpen && (
+            {t(pagesOpen && (
               <div className="absolute left-0 top-full pt-3">
                 <div className="w-44 rounded-sm border border-border bg-surface-elevated p-2 shadow-2xl">
-                  {PAGES_LINKS.map((sub) => (
+                  {t(PAGES_LINKS.map((sub) => (
                     <a
                       key={sub.label}
-                      href={sub.href}
+                      href={asset(sub.href)}
                       onClick={() => setPagesOpen(false)}
                       className="block rounded-sm px-3 py-2 font-display text-xs font-semibold tracking-wider uppercase text-foreground/85 transition-colors hover:bg-primary/20 hover:text-primary"
                     >
-                      {sub.label}
+                      {t(sub.label)}
                     </a>
-                  ))}
+                  )))}
                 </div>
               </div>
-            )}
+            ))}
           </div>
 
           <a
-            href="#news"
+            href={asset("#news")}
             className="font-display text-xs font-bold tracking-[0.18em] uppercase text-foreground/85 transition-colors hover:text-primary"
           >
-            News
-          </a>
+            {t("News ")}</a>
           <a
-            href="#contact"
+            href={asset("#contact")}
             className="font-display text-xs font-bold tracking-[0.18em] uppercase text-foreground/85 transition-colors hover:text-primary"
           >
-            Contact
-          </a>
+            {t("Contact ")}</a>
         </nav>
 
-        <div className="hidden items-center gap-4 lg:flex">
-          <div className="flex items-center gap-3 text-foreground/75">
+        <LanguageSwitcher hideWhenSingle />
+        <div className="hidden items-center gap-3 xl:flex">
+          <div className="hidden items-center gap-3 text-foreground/75 2xl:flex">
             <a
-              href={SOCIAL_LINKS.instagram}
+              href={asset(SOCIAL_LINKS.instagram)}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Instagram"
+              aria-label={t("Instagram")}
               className="transition-colors hover:text-primary"
             >
               <Instagram className="h-4 w-4" />
             </a>
             <a
-              href={SOCIAL_LINKS.tiktok}
+              href={asset(SOCIAL_LINKS.tiktok)}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="TikTok"
+              aria-label={t("TikTok")}
               className="transition-colors hover:text-primary"
             >
               <TikTokIcon className="h-4 w-4" />
             </a>
             <a
-              href={SOCIAL_LINKS.whatsapp}
+              href={asset(SOCIAL_LINKS.whatsapp)}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="WhatsApp"
+              aria-label={t("WhatsApp")}
               className="transition-colors hover:text-primary"
             >
               <WhatsAppIcon className="h-4 w-4" />
             </a>
             <a
-              href={`tel:${DJ_PHONE_TEL}`}
-              aria-label="Call DJ Wahid"
+              href={asset(`tel:${DJ_PHONE_TEL}`)}
+              aria-label={t("Call DJ Wahid")}
               className="transition-colors hover:text-primary"
             >
               <Phone className="h-4 w-4" />
@@ -149,35 +152,35 @@ export function Navbar({ cartCount, onOpenBooking }: NavbarProps) {
             onClick={onOpenBooking}
             className="btn-magenta cursor-pointer rounded-sm px-5 py-2.5 font-display text-xs font-bold tracking-[0.18em] uppercase"
           >
-            Book Now{cartCount > 0 ? ` (${cartCount})` : ""}
+            {t("Book Now")}{t(cartCount > 0 ? ` (${cartCount})` : "")}
           </button>
         </div>
 
         <button
           type="button"
           onClick={() => setMobileOpen((prev) => !prev)}
-          aria-label="Toggle menu"
-          className="grid h-10 w-10 place-items-center rounded-sm border border-border text-foreground lg:hidden"
+          aria-label={t("Toggle menu")}
+          className="grid h-10 w-10 place-items-center rounded-sm border border-border text-foreground xl:hidden"
         >
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {t(mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />)}
         </button>
       </div>
 
-      {mobileOpen && (
-        <div className="border-t border-border bg-surface-deep px-6 py-5 lg:hidden">
+      {t(mobileOpen && (
+        <div className="border-t border-border bg-surface-deep px-6 py-5 xl:hidden">
           <div className="flex flex-col gap-3">
-            {[...NAV_LINKS, ...PAGES_LINKS, { label: "News", href: "#news" }, { label: "Contact", href: "#contact" }].map(
+            {t([...NAV_LINKS, ...PAGES_LINKS, { label: "News", href: "#news" }, { label: "Contact", href: "#contact" }].map(
               (item) => (
                 <a
                   key={item.label}
-                  href={item.href}
+                  href={asset(item.href)}
                   onClick={() => setMobileOpen(false)}
                   className="py-1 font-display text-xs font-bold tracking-[0.18em] uppercase text-foreground/90 hover:text-primary"
                 >
-                  {item.label}
+                  {t(item.label)}
                 </a>
               ),
-            )}
+            ))}
             <button
               type="button"
               onClick={() => {
@@ -186,40 +189,39 @@ export function Navbar({ cartCount, onOpenBooking }: NavbarProps) {
               }}
               className="btn-magenta mt-2 w-full rounded-sm py-3 font-display text-xs font-bold tracking-[0.18em] uppercase"
             >
-              Book Now
-            </button>
+              {t("Book Now ")}</button>
 
             <div className="mt-3 flex items-center justify-center gap-4 text-foreground/75">
               <a
-                href={SOCIAL_LINKS.instagram}
+                href={asset(SOCIAL_LINKS.instagram)}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Instagram"
+                aria-label={t("Instagram")}
                 className="transition-colors hover:text-primary"
               >
                 <Instagram className="h-4 w-4" />
               </a>
               <a
-                href={SOCIAL_LINKS.tiktok}
+                href={asset(SOCIAL_LINKS.tiktok)}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="TikTok"
+                aria-label={t("TikTok")}
                 className="transition-colors hover:text-primary"
               >
                 <TikTokIcon className="h-4 w-4" />
               </a>
               <a
-                href={SOCIAL_LINKS.whatsapp}
+                href={asset(SOCIAL_LINKS.whatsapp)}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="WhatsApp"
+                aria-label={t("WhatsApp")}
                 className="transition-colors hover:text-primary"
               >
                 <WhatsAppIcon className="h-4 w-4" />
               </a>
               <a
-                href={`tel:${DJ_PHONE_TEL}`}
-                aria-label="Call DJ Wahid"
+                href={asset(`tel:${DJ_PHONE_TEL}`)}
+                aria-label={t("Call DJ Wahid")}
                 className="transition-colors hover:text-primary"
               >
                 <Phone className="h-4 w-4" />
@@ -227,7 +229,7 @@ export function Navbar({ cartCount, onOpenBooking }: NavbarProps) {
             </div>
           </div>
         </div>
-      )}
+      ))}
     </header>
   );
 }

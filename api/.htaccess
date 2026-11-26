@@ -1,6 +1,6 @@
 <IfModule mod_headers.c>
   Header always set Cache-Control "no-store"
 </IfModule>
-<FilesMatch "^(bootstrap|content|auth|public-gallery)\.php$">
+<FilesMatch "^(bootstrap|content|auth|public-gallery|site-settings|media-library|av-library)\.php$">
   Require all denied
 </FilesMatch>

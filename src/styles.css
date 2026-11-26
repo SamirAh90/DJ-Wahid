@@ -11,6 +11,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Clearing a managed link removes that action from the public site. */
+a[href=""] { display: none; }
+
 /*
  * Design system definition.
  *
@@ -219,11 +222,18 @@
 
 .music-visualizer {
   display: flex;
-  height: 2.5rem;
+  min-width: 0;
+  flex: 1;
+  height: 4.5rem;
   align-items: flex-end;
   gap: 3px;
   overflow: hidden;
   padding: 0.25rem 0 0.5rem;
+}
+
+@media (max-width: 639px) {
+  .music-visualizer { height: 3.5rem; }
+  .music-visualizer-bar:nth-child(even) { display: none; }
 }
 
 .music-visualizer-bar {

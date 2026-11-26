@@ -87,13 +87,13 @@ function verifyWrite(): void
     }
 }
 
-function input(): array
+function input(int $maxBytes = 65536): array
 {
     if (!str_starts_with(strtolower($_SERVER['CONTENT_TYPE'] ?? ''), 'application/json')) {
         throw new ApiError('Expected a JSON request.', 415);
     }
-    $raw = file_get_contents('php://input', false, null, 0, 65537);
-    if ($raw === false || strlen($raw) > 65536) throw new ApiError('Request is too large.', 413);
+    $raw = file_get_contents('php://input', false, null, 0, $maxBytes + 1);
+    if ($raw === false || strlen($raw) > $maxBytes) throw new ApiError('Request is too large.', 413);
     try { $data = json_decode($raw, true, 32, JSON_THROW_ON_ERROR); }
     catch (JsonException) { throw new ApiError('Invalid JSON request.'); }
     if (!is_array($data) || !str_starts_with(ltrim($raw), '{')) throw new ApiError('Invalid request.');

@@ -13,6 +13,7 @@ async function run(policy, allowed) {
     "--disable-features=PreloadMediaEngagementData,MediaEngagementBypassAutoplayPolicies"]});
   try {
     const page = await browser.newPage({viewport:{width:1440,height:900}});
+    await page.addInitScript(() => localStorage.setItem("dj-background-music-enabled", "false"));
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
     await page.goto(base, {waitUntil:"domcontentloaded"});
@@ -22,34 +23,45 @@ async function run(policy, allowed) {
     check(await audio.evaluate(node => node.loop && node.volume === 0.35 && node.duration > 300), "Loaded looping five-minute track at moderate volume");
     if (!allowed) {
       check(await audio.evaluate(node => node.paused), "Restricted browser waits for interaction");
-      check(await page.getByRole("button", {name:"Play background music",exact:true}).isVisible(), "Blocked autoplay offers Play");
+      check(await page.getByRole("button", {name:"Mute background music",exact:true}).isVisible(), "Mute is the only audio control");
       await page.getByRole("button", {name:"Next slide"}).click();
     }
-    await page.getByRole("button", {name:"Pause background music",exact:true}).waitFor();
     await page.waitForFunction(() => document.querySelector("[data-music-player] audio").currentTime > 0.2);
     check(await audio.evaluate(node => !node.paused), "Autoplay or first interaction starts playback");
     check(await page.locator('.music-visualizer[data-playing="true"]').count() === 1, "Visualizer animates during playback");
     await page.getByRole("button", {name:"Mute background music",exact:true}).click();
     check(await audio.evaluate(node => node.muted && !node.paused), "Mute silences playback");
-    check(await page.locator('.music-visualizer[data-playing="false"]').count() === 1, "Visualizer settles when muted");
+    check(await page.locator('.music-visualizer[data-playing="true"]').count() === 1, "Muted track keeps playing and animating");
     await page.reload({waitUntil:"domcontentloaded"});
-    await page.getByRole("button", {name:"Unmute background music",exact:true}).waitFor();
-    check(await audio.evaluate(node => node.muted), "Mute preference survives reload");
-    await page.getByRole("button", {name:"Unmute background music",exact:true}).click();
-    await page.getByRole("button", {name:"Pause background music",exact:true}).click();
-    await page.getByRole("button", {name:"Play background music",exact:true}).waitFor();
+    await page.getByRole("button", {name:"Mute background music",exact:true}).waitFor();
+    check(await audio.evaluate(node => !node.muted), "Sound resets to on after reload");
+    await page.getByRole("button", {name:"Next slide",exact:true}).click();
+    await page.waitForFunction(() => !document.querySelector("[data-music-player] audio").paused);
+    check(await audio.evaluate(node => !node.muted), "Unmute restores sound without restarting the track");
+    check(await page.locator("[data-music-player] button").count() === 1, "No play/pause button or track caption");
+    const player = page.locator("[data-music-player]");
+    check(await player.evaluate(node => {
+      const style = getComputedStyle(node);
+      return style.borderTopWidth === "0px" && style.backgroundColor === "rgba(0, 0, 0, 0)" && style.boxShadow === "none";
+    }), "Borderless equalizer with no player box");
+    check(await player.evaluate(node => {
+      const hero = node.closest("#home").getBoundingClientRect();
+      const bounds = node.getBoundingClientRect();
+      return Math.abs(bounds.left + bounds.width / 2 - (hero.left + hero.width / 2)) < 1
+        && bounds.top > hero.top + hero.height / 2 && bounds.bottom < hero.bottom - 60;
+    }), "Equalizer centred near the bottom of the hero above slide controls");
     await page.getByRole("button", {name:"Next slide"}).click();
-    check(await audio.evaluate(node => node.paused), "Manual pause persists through other interactions");
+    check(await audio.evaluate(node => !node.paused), "Music keeps playing through slide changes");
     await page.reload({waitUntil:"domcontentloaded"});
-    check(await audio.evaluate(node => node.paused), "Manual pause survives reload");
-    await page.getByRole("button", {name:"Play background music",exact:true}).click();
-    await page.getByRole("button", {name:"Pause background music",exact:true}).waitFor();
+    await page.getByRole("button", {name:"Next slide"}).click();
+    await page.waitForFunction(() => !document.querySelector("[data-music-player] audio").paused);
+    check(await audio.evaluate(node => !node.muted), "Playback resumes after reload despite old pause preference");
     await page.getByRole("button", {name:"Play DJW - SUPERMIX PODCAST #1",exact:true}).click();
-    check(await audio.evaluate(node => node.paused), "Podcast pauses background track");
+    check(await audio.evaluate(node => !node.paused), "Background music continues during podcast playback");
     await page.getByRole("button", {name:"Pause DJW - SUPERMIX PODCAST #1",exact:true}).waitFor();
-    await page.getByRole("button", {name:"Play background music",exact:true}).click();
-    await page.getByRole("button", {name:"Play DJW - SUPERMIX PODCAST #1",exact:true}).waitFor();
-    check(await audio.evaluate(node => !node.paused), "Background track stops podcast and resumes");
+    await page.getByRole("button", {name:"Pause DJW - SUPERMIX PODCAST #1",exact:true}).click();
+    await page.waitForFunction(() => !document.querySelector("[data-music-player] audio").paused);
+    check(await audio.evaluate(node => !node.paused), "Background track automatically resumes after podcast stops");
     await page.emulateMedia({reducedMotion:"reduce"});
     check(await page.locator(".music-visualizer-bar").first().evaluate(node => getComputedStyle(node).animationName === "none"), "Reduced-motion preference respected");
     await page.emulateMedia({reducedMotion:"no-preference"});
