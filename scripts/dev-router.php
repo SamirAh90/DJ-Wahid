@@ -37,6 +37,6 @@ if (str_starts_with($path, '/api/')) {
 }
 $file = realpath($root . $path);
 if ($file && str_starts_with($file, $root . DIRECTORY_SEPARATOR) && is_file($file) && !str_ends_with($file, '.php')) return false;
-if (preg_match('~^/(assets|images|fonts|__l5e)(/|$)~', $path)) { http_response_code(404); exit; }
+if (preg_match('~^/(assets|images|fonts|mp3|__l5e)(/|$)~', $path)) { http_response_code(404); exit; }
 if (is_file($root . '/index.php')) { require $root . '/index.php'; return true; }
 http_response_code(404);

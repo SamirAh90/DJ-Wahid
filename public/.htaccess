@@ -1,5 +1,6 @@
 Options -Indexes -MultiViews
 DirectoryIndex index.php index.html
+AddType audio/mpeg .mp3
 
 <FilesMatch "(^\.|\.(env|ini|log|sql|bak|map|json)$|^config\.php$)">
   Require all denied
@@ -46,5 +47,5 @@ RewriteRule ^api(?:/|$) - [END]
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [END]
-RewriteRule ^(assets|images|fonts|__l5e)(/|$) - [R=404,END]
+RewriteRule ^(assets|images|fonts|mp3|__l5e)(/|$) - [R=404,END]
 RewriteRule ^ index.php [END]

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Navbar } from "@/components/Navbar";
@@ -7,6 +7,8 @@ import { ClubSections } from "@/components/ClubSections";
 import { PodcastSection } from "@/components/PodcastSection";
 import { BookingModal, CommunityAndFooter } from "@/components/CommunityAndFooter";
 import { siteContentQuery } from "@/data/site.queries";
+import { ServiceContactModal } from "@/components/ServiceContactModal";
+import { BackgroundMusic } from "@/components/BackgroundMusic";
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
@@ -41,6 +43,8 @@ export function Index() {
   const [cartCount, setCartCount] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalSubject, setModalSubject] = useState("Book DJ Wahid");
+  const [serviceContact, setServiceContact] = useState({ open: false, service: "" });
+  const serviceTrigger = useRef<HTMLElement | null>(null);
   const { data } = useQuery(siteContentQuery);
   const events = data?.events ?? [];
   const photos = data?.photos ?? [];
@@ -59,7 +63,10 @@ export function Index() {
           onGetTickets={(title) => openModal(`Tickets: ${title}`)}
           onBuyVinyl={() => setCartCount((c) => c + 1)}
           cartCount={cartCount}
-          onBookService={(service) => openModal(`Book Service: ${service}`)}
+          onBookService={(service) => {
+            serviceTrigger.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+            setServiceContact({ open: true, service });
+          }}
           events={events}
           photos={photos}
         />
@@ -67,6 +74,10 @@ export function Index() {
         <CommunityAndFooter />
       </main>
       <BookingModal open={modalOpen} subject={modalSubject} onClose={() => setModalOpen(false)} />
+      <ServiceContactModal open={serviceContact.open} service={serviceContact.service}
+        onOpenChange={(open) => setServiceContact((current) => ({ ...current, open }))}
+        onAfterClose={() => serviceTrigger.current?.focus()} />
+      <BackgroundMusic />
     </div>
   );
 }

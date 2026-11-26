@@ -17,6 +17,7 @@
     "assets:import": "node scripts/import-assets.mjs",
     "format": "prettier --write src scripts docs README.md",
     "test:browser": "node scripts/test-browser.mjs",
+    "test:music": "node scripts/test-music.mjs",
     "capture": "node scripts/capture-pages.mjs",
     "compare": "node scripts/compare-screenshots.mjs",
     "test:gallery": "node --test scripts/public-gallery.test.mjs"

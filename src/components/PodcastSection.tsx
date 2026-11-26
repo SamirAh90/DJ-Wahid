@@ -40,7 +40,12 @@ export function PodcastSection() {
   }, [playingId]);
 
   useEffect(() => {
-    return () => clubAudio.stop();
+    const pauseForBackground = () => { clubAudio.stop(); setPlayingId(null); };
+    window.addEventListener("dj:background-play", pauseForBackground);
+    return () => {
+      clubAudio.stop();
+      window.removeEventListener("dj:background-play", pauseForBackground);
+    };
   }, []);
 
   const toggleTrack = (track: (typeof PODCAST_TRACKS)[number]) => {
@@ -48,6 +53,7 @@ export function PodcastSection() {
       clubAudio.stop();
       setPlayingId(null);
     } else {
+      window.dispatchEvent(new Event("dj:podcast-play"));
       clubAudio.start(track.bpm, track.rootHz);
       setPlayingId(track.id);
     }
@@ -60,7 +66,7 @@ export function PodcastSection() {
   return (
     <section id="podcast" className="bg-surface-deep py-24">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:px-8">
-        <div className="space-y-4 lg:col-span-7">
+        <div className="min-w-0 space-y-4 lg:col-span-7">
           {PODCAST_TRACKS.map((track) => {
             const isPlaying = playingId === track.id;
             const elapsed = progress[track.id] ?? 0;
@@ -128,7 +134,7 @@ export function PodcastSection() {
           })}
         </div>
 
-        <div className="lg:col-span-5">
+        <div className="min-w-0 lg:col-span-5">
           <p className="section-eyebrow">Music</p>
           <h2 className="mt-3 font-display text-4xl font-black tracking-tight uppercase text-foreground sm:text-5xl">
             Podcast

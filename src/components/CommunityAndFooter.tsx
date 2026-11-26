@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { ArrowRight, Instagram, Phone, X } from "lucide-react";
 import { BLOG_POSTS, DJ_NAME, DJ_PHONE_DISPLAY, DJ_PHONE_TEL, DJ_SHORT, SOCIAL_LINKS } from "@/data/dj-data";
-import { TikTokIcon, WhatsAppIcon } from "@/components/SocialIcons";
+import { SwedenFlag, TikTokIcon, WhatsAppIcon } from "@/components/SocialIcons";
 
 interface BookingModalProps {
   open: boolean;
@@ -170,6 +170,7 @@ export function CommunityAndFooter() {
               className="flex items-center gap-2 transition-colors hover:text-primary"
             >
               <Phone className="h-4 w-4 text-primary" />
+              <SwedenFlag className="h-3.5 w-5 shrink-0 rounded-[1px]" />
               {DJ_PHONE_DISPLAY}
             </a>
             <a

@@ -19,7 +19,7 @@ export async function checkDeployment(target = process.env.SITE_BUILD_TARGET ?? 
       }
     } catch { failures.push(`Missing required image: public/images/${filename}`); }
   }
-  const requiredFiles = ["dist/index.html", "dist/fonts/fonts.css", "dist/favicon.ico", "dist/robots.txt"];
+  const requiredFiles = ["dist/index.html", "dist/fonts/fonts.css", "dist/favicon.ico", "dist/robots.txt", "dist/mp3/Bijan Mortazavi.mp3"];
   if (target === "strato") {
     requiredFiles.push("dist/.htaccess", "dist/index.php", "dist/api/index.php", "dist/templates/home.html");
   } else {

@@ -2,6 +2,15 @@ interface IconProps {
   className?: string;
 }
 
+export function SwedenFlag({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 16 10" role="img" aria-label="Sweden" focusable="false" className={className}>
+      <rect width="16" height="10" fill="#006aa7" />
+      <path d="M0 5h16M6 0v10" stroke="#fecc00" strokeWidth="2" />
+    </svg>
+  );
+}
+
 export function WhatsAppIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" className={className}>

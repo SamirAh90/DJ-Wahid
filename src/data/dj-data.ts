@@ -12,6 +12,11 @@ export const DJ_SHORT = "DJW";
 export const DJ_PHONE_DISPLAY = "0046736402445";
 export const DJ_PHONE_TEL = "+46736402445";
 
+export const BACKGROUND_MUSIC = {
+  title: "Bijan Mortazavi",
+  src: "/mp3/Bijan%20Mortazavi.mp3",
+} as const;
+
 export const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/dj.wahid2/",
   tiktok: "https://www.tiktok.com/@dj.wahid2/",

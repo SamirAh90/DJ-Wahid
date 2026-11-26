@@ -31,9 +31,21 @@ try {
     await modal.getByRole("button", {name:"Close modal"}).click();
     await page.locator("#shop").getByRole("button", {name:/Buy Now/}).click();
     check((await page.locator("#shop").getByRole("button", {name:/Buy Now/}).innerText()).includes("1"), "Vinyl cart count");
-    await page.locator("#services").getByRole("button").first().click();
-    await modal.getByRole("heading", {name:"Book Service: Weddings"}).waitFor(); checks++;
-    await modal.getByRole("button", {name:"Close modal"}).click();
+    for (const service of ["Weddings", "Clubs and Bars", "Corporate Events", "Playlist Creation", "DJ Lessons"]) {
+      const trigger = page.locator("#services").getByRole("button", {name:new RegExp(`^${service} `, "i")});
+      await trigger.click();
+      const contact = page.getByRole("dialog");
+      await contact.getByRole("heading", {name:`Book Service: ${service}`, exact:true}).waitFor(); checks++;
+      check(await contact.locator("form, input").count() === 0, "Service contacts have no booking form");
+      for (const href of ["tel:+46736402445", "https://www.instagram.com/dj.wahid2/", "https://wa.me/46736402445", "https://www.tiktok.com/@dj.wahid2/"]) {
+        check(await contact.locator(`a[href="${href}"]`).isVisible(), `${service} contact ${href}`);
+      }
+      check((await contact.innerText()).includes("You can contact me by phone"), "Service contact description");
+      await page.keyboard.press("Escape");
+      await contact.waitFor({state:"hidden"});
+      check(await trigger.evaluate(node => document.activeElement === node), "Service trigger regains keyboard focus");
+    }
+    check(await page.locator('footer a[href="tel:+46736402445"]').getByRole("img", {name:"Sweden"}).isVisible(), "Sweden flag beside footer telephone");
     await page.getByRole("button", {name:"Play DJW - SUPERMIX PODCAST #1"}).click();
     await page.getByRole("button", {name:"Pause DJW - SUPERMIX PODCAST #1"}).waitFor(); checks++;
     await page.getByRole("button", {name:"Pause DJW - SUPERMIX PODCAST #1"}).click();

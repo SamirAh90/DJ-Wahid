@@ -45,6 +45,15 @@ Facebook was removed at the user's request. There was no video player in the
 original website. Media placed under `public`, including `public/Vedios` when
 present, is copied into the deployment output without adding a video player.
 
+The service buttons open a contact panel with phone, Instagram, WhatsApp and
+TikTok links. The footer identifies the phone number with a Swedish flag.
+`public/mp3/Bijan Mortazavi.mp3` supplies looping background music with a compact
+pink/cyan animated player. Play/pause and mute preferences are remembered locally.
+Browsers that block audible autoplay start playback after a visitor's first
+interaction or a press of Play. Starting a podcast preview pauses background music,
+and starting background music stops a podcast preview. Reduced-motion preferences
+disable the visualizer animation.
+
 The user manages images directly in `public/images`. The stable names
 `hero-dj-1.webp`, `hero-dj-2.webp`, `hero-dj-3.webp` and `dj-portrait-1.jpg` are
 required by the hero/biography components and listed in `config/assets.json`.
@@ -161,7 +170,9 @@ authorization, validation, content changes, signed private media and deletion,
 then removes its records. Never run it against the production database.
 
 Browser checks can be repeated with `npx playwright install chromium` followed by
-`npm run test:browser`. To use an installed Edge browser on Windows, set
+`npm run test:browser`. `npm run test:music` verifies both autoplay policies,
+play/pause/mute preferences, podcast switching and the mobile contact panel.
+To use an installed Edge browser on Windows, set
 `$env:BROWSER_CHANNEL='msedge'` in PowerShell first. Capture both pages with
 `npm run capture -- http://127.0.0.1:8080 artifacts/after`, then compare against a
 baseline directory with `npm run compare -- artifacts/before artifacts/after`.
