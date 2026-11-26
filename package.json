@@ -18,7 +18,8 @@
     "format": "prettier --write src scripts docs README.md",
     "test:browser": "node scripts/test-browser.mjs",
     "capture": "node scripts/capture-pages.mjs",
-    "compare": "node scripts/compare-screenshots.mjs"
+    "compare": "node scripts/compare-screenshots.mjs",
+    "test:gallery": "node --test scripts/public-gallery.test.mjs"
   },
   "overrides": {
     "rolldown": "1.2.1",

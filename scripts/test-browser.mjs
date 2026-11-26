@@ -26,7 +26,7 @@ try {
     await modal.getByText("Thanks, Visual QA.", {exact:false}).waitFor(); checks++;
     await modal.getByRole("button", {name:"Done",exact:true}).click();
     check(await modal.count() === 0, "Booking dialog closes");
-    await page.locator("#events").getByRole("button", {name:"Get Tickets"}).first().click();
+    await page.locator("#events").getByRole("button", {name:"More Events",exact:true}).click();
     await modal.getByRole("heading", {name:/Tickets:/}).waitFor(); checks++;
     await modal.getByRole("button", {name:"Close modal"}).click();
     await page.locator("#shop").getByRole("button", {name:/Buy Now/}).click();

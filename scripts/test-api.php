@@ -78,7 +78,7 @@ try {
     check(request('save-event', null, [], '{invalid')[0] === 400, 'Invalid JSON rejected');
 
     $boundary = 'migration-' . bin2hex(random_bytes(8));
-    $jpg = file_get_contents(__DIR__ . '/../public/images/dj-decks-1.jpg');
+    $jpg = file_get_contents(__DIR__ . '/../public/images/dj-portrait-1.jpg');
     $multipart = "--$boundary\r\nContent-Disposition: form-data; name=\"photo\"; filename=\"photo.php.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n$jpg\r\n--$boundary--\r\n";
     [$status, $uploaded] = request('upload', null, [], $multipart, "multipart/form-data; boundary=$boundary");
     check($status === 200 && str_starts_with($uploaded['image_url'], 'storage://'), 'Validated private image upload');

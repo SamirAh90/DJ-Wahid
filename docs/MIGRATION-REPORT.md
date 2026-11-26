@@ -8,6 +8,15 @@ subscription form and its accompanying text have been removed. The community
 heading remains. The migration comparisons below describe the website before
 these subsequent user-authorized content changes.
 
+Further update on 26 November 2026: the gallery now reads the current files under
+`public/images`, deduplicated by file bytes. The user explicitly approved clearing
+all local content and accounts. Events, gallery rows, users, roles, sessions and
+rate limits were cleared after a private backup; the schema and internal first-admin
+bootstrap lock remain. Default seed files no longer insert demonstration records.
+Both PHP and static builds use folder images, while later private uploads still
+work. Historical counts and checksums below describe the earlier migration snapshot,
+not the user's current public media library or the cleared local database.
+
 ## Result and scope
 
 The source has been migrated to an independent React/Vite frontend with a PHP and

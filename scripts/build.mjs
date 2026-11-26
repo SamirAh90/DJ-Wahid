@@ -2,6 +2,7 @@ import { build } from "vite";
 import { readFile, writeFile, mkdir, cp, rm } from "node:fs/promises";
 import { resolve, relative } from "node:path";
 import { pathToFileURL } from "node:url";
+import { readPublicGallery } from "./public-gallery.mjs";
 
 // Only remove known generated output within this checkout.
 const root = process.cwd();
@@ -25,7 +26,7 @@ const shell = await readFile("dist/index.html", "utf8");
 const seedContent = JSON.parse(await readFile("database/content.json", "utf8"));
 const staticContent = {
   events: seedContent.events.filter((event) => event.published),
-  photos: seedContent.photos.filter((photo) => photo.published),
+  photos: await readPublicGallery("dist/images"),
 };
 const serializedContent = JSON.stringify(staticContent)
   .replace(/</g, "\\u003c")

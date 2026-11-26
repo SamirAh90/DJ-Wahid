@@ -21,7 +21,7 @@ be checked during deployment. No live STRATO deployment is claimed by this proje
 
 `netlify.toml` configures a static-only build so Git-connected Netlify deploys
 have an `index.html` and can serve the client-side routes. Its homepage uses
-published seed content from `database/content.json`. Netlify does not execute the
+images from `public/images` and optional event data from `database/content.json`. Netlify does not execute the
 PHP/MySQL backend: admin sign-in and database changes are unavailable there, and
 API requests return 503. Use the STRATO deployment below for the complete site.
 
@@ -92,11 +92,11 @@ the public directory.
    its exact host, database name, username and password privately. Do not assume
    that the host is `localhost`.
 3. Open the account's database administration/phpMyAdmin. Import
-   `database/schema.sql`, then `database/content.sql`. Import each once into the
-   empty database; these scripts never drop existing data.
-4. Verify there are 2 events, 8 gallery rows and 0 users before creating the admin.
-   Compare their IDs and fields with `database/content.json`. That export was
-   taken from the existing backend and preserves timestamps and content.
+   `database/schema.sql`. `database/content.sql` intentionally inserts no demo data.
+   These scripts never drop existing data.
+4. Verify events, gallery records and users are empty before creating the admin.
+   Public images are discovered directly from `public/images`. Later admin-created
+   events and private uploads are stored in the database normally.
 5. Copy `server/config.example.php` to the private `config.php` on the server. Enter
    the database settings, the exact public HTTPS origin (scheme and hostname,
    no trailing path), your owner email, a real sender address, and a random signing
@@ -154,9 +154,9 @@ corresponding rewrite stanza after confirming the provider's configuration.
 - `/admin` returns the original sign-in screen and `noindex, nofollow` metadata.
 - Refreshing `/admin` works, and an unknown page returns the existing React 404
   with HTTP 404. Navigation anchors reach their original sections.
-- All seven images, local fonts, favicon, scripts and styles return 200. Original
+- All current public images, local fonts, favicon, scripts and styles return 200. Original
   `/__l5e/assets-v1/.../<filename>` image URLs resolve through the compatibility
-  rewrite without depending on an external asset service.
+  rewrite where the corresponding file still exists, without an external asset service.
 - `/api/index.php?action=content` returns JSON. An unknown API path returns 404,
   and a missing `.js`/image file does not return the SPA's HTML.
 - `/templates/home.html`, `/api/bootstrap.php`, `/.env`, and private configuration

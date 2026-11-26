@@ -21,8 +21,8 @@ try {
       await page.clock.install({ time: new Date("2026-11-25T12:00:00Z") });
       const response = await page.goto(base + route, {waitUntil:"networkidle", timeout:60000});
       if (route === "/") {
-        await page.waitForFunction(count => document.querySelectorAll("#instagram img").length === count,
-          Number(process.env.EXPECTED_GALLERY_COUNT ?? 8));
+        await page.waitForFunction(count => document.querySelectorAll("#instagram img").length === (count ?? window.__SITE_CONTENT__?.photos.length),
+          process.env.EXPECTED_GALLERY_COUNT ? Number(process.env.EXPECTED_GALLERY_COUNT) : null);
       } else await page.getByRole("heading", {name:"Admin Portal"}).waitFor();
       await page.evaluate(() => document.fonts.ready);
       await page.clock.pauseAt(new Date(await page.evaluate(() => Date.now()) + 100));

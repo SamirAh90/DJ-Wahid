@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/public-gallery.php';
 
 function photoUrl(string $value): string
 {
@@ -25,6 +26,12 @@ function siteContent(bool $all = false): array
         $photo['published'] = (bool)$photo['published'];
         foreach (['likes', 'comments', 'sort_order'] as $key) $photo[$key] = (int)$photo[$key];
         $photo['image_url'] = photoUrl($photo['image_url']);
+    }
+    if (!$all) {
+        $folderPhotos = readPublicGallery(getenv('SITE_PUBLIC_IMAGES_PATH') ?: dirname(__DIR__) . '/images');
+        $folderUrls = array_column($folderPhotos, 'image_url');
+        $photos = [...$folderPhotos, ...array_values(array_filter($photos,
+            static fn(array $photo): bool => !in_array($photo['image_url'], $folderUrls, true)))];
     }
     return ['events' => $events, 'photos' => $photos];
 }

@@ -11,11 +11,13 @@ export async function checkDeployment(target = process.env.SITE_BUILD_TARGET ?? 
   const assets = JSON.parse(await readFile("config/assets.json", "utf8"));
   for (const {filename, bytes, sha256} of assets) {
     try {
-      if ((await stat(join("dist/images", filename))).size !== bytes) failures.push(`Original image size mismatch: ${filename}`);
+      const size = (await stat(join("dist/images", filename))).size;
+      if (!size) failures.push(`Required image is empty: ${filename}`);
+      if (bytes !== undefined && size !== bytes) failures.push(`Image size mismatch: ${filename}`);
       if (sha256 && createHash("sha256").update(await readFile(join("dist/images", filename))).digest("hex") !== sha256) {
         failures.push(`Original image checksum mismatch: ${filename}`);
       }
-    } catch { failures.push(`Missing original image: public/images/${filename}`); }
+    } catch { failures.push(`Missing required image: public/images/${filename}`); }
   }
   const requiredFiles = ["dist/index.html", "dist/fonts/fonts.css", "dist/favicon.ico", "dist/robots.txt"];
   if (target === "strato") {

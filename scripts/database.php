@@ -28,7 +28,7 @@ try {
             }
         }
         db()->commit();
-        echo "Imported the original 2 events and 8 gallery entries, including UUIDs and timestamps.\n";
+        echo 'Imported ' . count($content['events']) . ' events and ' . count($content['photos']) . " gallery records. Public folder images do not need database rows.\n";
     } elseif ($command === 'verify') {
         $content = json_decode(file_get_contents($root . '/database/content.json'), true, 32, JSON_THROW_ON_ERROR);
         foreach (['events' => 'events', 'photos' => 'gallery_photos'] as $source => $table) {

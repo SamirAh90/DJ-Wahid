@@ -7,7 +7,8 @@ content, animations and responsive layouts are retained.
 Production serves compiled frontend assets and PHP. It does not require Node.js,
 an application server, a cloud database subscription or a platform hosting account.
 
-Netlify builds a static frontend snapshot from `database/content.json` so the
+Netlify builds a static frontend snapshot from `public/images` and the optional
+event snapshot in `database/content.json` so the
 homepage and client-side routes remain available there. Netlify does not run this
 project's PHP/MySQL backend; sign-in, admin changes and live database updates
 require the STRATO deployment.
@@ -21,7 +22,11 @@ require the STRATO deployment.
 - MySQL 8 or MariaDB 10.6+ with InnoDB and utf8mb4.
 - Local images and locally served DM Sans/Montserrat font files with OFL licenses.
 
-The public page reads published events and photos from PHP. The admin portal
+The public gallery reads the files currently in `public/images`, displaying
+duplicate file contents only once. Names with spaces and Swedish letters are
+supported. No gallery database rows are needed for these images. The database
+starts without demo events, photos or accounts; later admin-created events and
+private uploads are stored normally. The admin portal
 supports account registration, sign-in/out, event management, image uploads,
 publishing/hiding photos and deletion. Private uploads stay outside the domain's
 document root and are served through signed links valid for one hour.
@@ -36,15 +41,17 @@ not send email, save submissions or charge customers. The subscription form was
 removed at the user's request. The cart
 retains its session-local counter, and podcast previews retain their Web Audio
 generator. Instagram, TikTok (`@dj.wahid2`) and WhatsApp provide the social links;
-Facebook was removed at the user's request. There was no video player in the original website; the supplied
-`Vedios/` originals are retained outside the deployment output.
+Facebook was removed at the user's request. There was no video player in the
+original website. Media placed under `public`, including `public/Vedios` when
+present, is copied into the deployment output without adding a video player.
 
-The user supplied the missing media and authorized selection of the hero images.
-The three selected WebP files are copied byte for byte, alongside the four matched
-original JPGs. The choices and checksums are recorded in `config/asset-provenance.json`
-and `config/assets.json`. Original hero PNG URLs continue to resolve through local
-rewrite rules. This authorized selection is separate from the unchanged layout,
-colours and presentation code.
+The user manages images directly in `public/images`. The stable names
+`hero-dj-1.webp`, `hero-dj-2.webp`, `hero-dj-3.webp` and `dj-portrait-1.jpg` are
+required by the hero/biography components and listed in `config/assets.json`.
+These files can be replaced without changing pinned checksums. Earlier migration
+choices are recorded historically in `config/asset-provenance.json`; those records
+do not override the current public files. Original hero PNG URLs continue to
+resolve through local rewrite rules.
 
 ## Project layout
 
@@ -54,7 +61,7 @@ colours and presentation code.
 | `public/` | Images, fonts, favicon, robots.txt and Apache configuration |
 | `api/` | PHP API, authentication, validation and database access |
 | `server/` | PHP page entry point and private configuration example |
-| `database/` | New schema, original content export and installation SQL |
+| `database/` | Schema and empty initial content files |
 | `scripts/` | Build, local server, database and verification tools |
 | `docs/` | Deployment instructions and migration report |
 | `dist/` | Generated public deployment files; ignored by Git |
@@ -86,12 +93,16 @@ private config file. PowerShell:
 
 ```powershell
 $env:SITE_CONFIG_PATH = Join-Path (Get-Location) 'private/config.php'
+$env:SITE_PUBLIC_IMAGES_PATH = Join-Path (Get-Location) 'public/images'
 php scripts/database.php install
 php scripts/database.php import
 php scripts/database.php verify
 ```
 
-POSIX shell equivalent: `export SITE_CONFIG_PATH="$PWD/private/config.php"`.
+POSIX shell equivalents: `export SITE_CONFIG_PATH="$PWD/private/config.php"` and
+`export SITE_PUBLIC_IMAGES_PATH="$PWD/public/images"`. The image-path variable is
+for local development/preview so image additions, replacements and removals appear
+on refresh without rebuilding. Production defaults to its deployed `images/` folder.
 
 Run the PHP backend in one terminal and Vite in another:
 
@@ -122,14 +133,15 @@ npm run build
 npm run check:deploy
 ```
 
-`npm run build` compiles the frontend, renders page templates locally, copies PHP
+`npm run build` compiles the frontend, discovers public gallery images, renders page templates locally, copies PHP
 and static assets into `dist/`, and verifies the deployment files. It fails
-if required original images are missing or their recorded sizes do not match.
-Original image files belong in `public/images/`; `npm run assets:import -- <folder>`
-imports a complete set with the recorded filenames and sizes.
+if required hero/biography images are missing or empty. Gallery images belong in
+`public/images/`; no database import is needed. `npm run assets:import -- <folder>`
+can copy the required named hero/biography files from another folder. The admin
+Photos panel manages private uploads; folder images are managed in the filesystem.
 
 Netlify reads `netlify.toml` and builds a static-only `dist/` without PHP source.
-The static homepage uses published seed content; API requests return an explicit
+The static homepage uses the current public image folder and optional event snapshot; API requests return an explicit
 503 because the PHP backend is unavailable on Netlify.
 
 To preview the actual PHP production output, set `origin` in the local private
@@ -153,8 +165,9 @@ Browser checks can be repeated with `npx playwright install chromium` followed b
 `$env:BROWSER_CHANNEL='msedge'` in PowerShell first. Capture both pages with
 `npm run capture -- http://127.0.0.1:8080 artifacts/after`, then compare against a
 baseline directory with `npm run compare -- artifacts/before artifacts/after`.
-Capture expects the original eight gallery entries; set `EXPECTED_GALLERY_COUNT`
-when deliberately verifying a different dataset. Exact pixel comparisons return
+Capture uses the page's current gallery count; `EXPECTED_GALLERY_COUNT` can override
+it. `npm run test:gallery` checks PHP/static-build gallery parity, duplicate handling
+and filename encoding. Exact pixel comparisons return
 a failure when any pixels differ, so inspect rasterization differences as well
 as structural changes before interpreting the result.
 
